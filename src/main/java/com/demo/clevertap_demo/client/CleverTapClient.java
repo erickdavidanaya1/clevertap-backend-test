@@ -5,8 +5,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Map;
 
 @Component
@@ -20,22 +18,18 @@ public class CleverTapClient {
   @Value("${clevertap.passcode}")
   private String passcode;
 
-  @Value("${clevertap.region:in1}")
+  @Value("${clevertap.region:eu1}")
   private String region;
 
   private HttpHeaders headers() {
     HttpHeaders h = new HttpHeaders();
     h.setContentType(MediaType.APPLICATION_JSON);
-
-    String basic = accountId + ":" + passcode;
-    String encoded = Base64.getEncoder().encodeToString(basic.getBytes(StandardCharsets.UTF_8));
-    h.set("Authorization", "Basic " + encoded);
-
+    h.set("X-CleverTap-Account-Id", accountId);
+    h.set("X-CleverTap-Passcode", passcode);
     return h;
   }
 
   private String baseUrl() {
-    // API endpoint típico por región
     return "https://" + region + ".api.clevertap.com/1";
   }
 
@@ -45,4 +39,5 @@ public class CleverTapClient {
     return restTemplate.exchange(url, HttpMethod.POST, req, String.class);
   }
 }
+
 

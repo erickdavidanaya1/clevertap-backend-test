@@ -1,3 +1,4 @@
+// src/main/java/com/demo/clevertap_demo/service/UserService.java
 package com.demo.clevertap_demo.service;
 
 import com.demo.clevertap_demo.dto.CreateUserRequest;
@@ -11,21 +12,34 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private final AppUserRepository repo;
+  private final CleverTapSyncService cleverTapSyncService;
 
-  public UserService(AppUserRepository repo) {
+  public UserService(AppUserRepository repo, CleverTapSyncService cleverTapSyncService) {
     this.repo = repo;
+    this.cleverTapSyncService = cleverTapSyncService;
   }
 
   public AppUser upsert(CreateUserRequest req) {
     String externalId = req.externalId.trim();
 
-    return repo.findByExternalId(externalId)
+    AppUser saved = repo.findByExternalId(externalId)
         .map(u -> {
           u.setName(req.name);
           u.setEmail(req.email);
           return repo.save(u);
         })
         .orElseGet(() -> repo.save(new AppUser(externalId, req.name, req.email)));
+
+    // Sync a CleverTap (no tumba la API si falla)
+    try {
+      var resp = cleverTapSyncService.sendUserUpsert(saved);
+      System.out.println("[CleverTap] profile sync status=" + resp.getStatusCode());
+      System.out.println("[CleverTap] profile sync body=" + resp.getBody());
+    } catch (Exception e) {
+      System.out.println("[CleverTap] profile sync failed: " + e.getMessage());
+    }
+
+    return saved;
   }
 
   public AppUser getByExternalId(String externalId) {
@@ -33,3 +47,5 @@ public class UserService {
         .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "user not found"));
   }
 }
+
+
