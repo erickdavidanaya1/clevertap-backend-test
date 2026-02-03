@@ -209,15 +209,28 @@ Incluye:
 
 ---
 
-## 🖼️ Screenshots recomendados para el README
+## 📸 Screenshots de la prueba funcionando
 
-1. Swagger UI cargado correctamente
-2. Login exitoso mostrando el token
-3. Modal de Authorize con Bearer token
-4. POST /users funcionando (200 OK)
-5. POST /events funcionando (200 OK)
-6. CleverTap → Profile mostrando el usuario
-7. CleverTap → Activity mostrando el evento
+### 🔹 Swagger UI
+![Swagger](docs/images/swagger.png)
+
+### 🔹 Login y obtención de JWT
+![Login Token](docs/images/login-token.png)
+
+### 🔹 Autorización en Swagger con Bearer Token
+![Authorize](docs/images/swagger-authorize.png)
+
+### 🔹 Creación de usuario (200 OK)
+![Create User](docs/images/create-user.png)
+
+### 🔹 Creación de evento (200 OK)
+![Create Event](docs/images/create-event.png)
+
+### 🔹 Perfil creado en CleverTap
+![CleverTap Profile](docs/images/clevertap-profile.png)
+
+### 🔹 Evento registrado en CleverTap (Activity)
+![CleverTap Activity](docs/images/clevertap-activity.png)
 
 ---
 
@@ -231,4 +244,4 @@ Incluye:
 
 ## 👨‍💻 Autor
 
-Prueba técnica realizada por Danilo Lavayen
+Erick Anaya
