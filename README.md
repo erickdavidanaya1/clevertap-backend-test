@@ -211,26 +211,23 @@ Incluye:
 
 ## 📸 Screenshots de la prueba funcionando
 
-### 🔹 Swagger UI
-![Swagger](clevertap-demo/src/docs/images/swagger.png)
-
 ### 🔹 Login y obtención de JWT
-![Login Token](clevertap-demo/src/docs/images/login-token.png)
+![Login Token](docs/images/login-token.png)
 
 ### 🔹 Autorización en Swagger con Bearer Token
-![Authorize](clevertap-demo/src/docs/images/swagger-authorize.png)
+![Authorize](docs/images/swagger-authorize.png)
 
 ### 🔹 Creación de usuario (200 OK)
-![Create User](clevertap-demo/src/docs/images/create-user.png)
+![Create User](docs/images/create-user.png)
 
 ### 🔹 Creación de evento (200 OK)
-![Create Event](clevertap-demo/src/docs/images/create-event.png)
+![Create Event](docs/images/create-event.png)
 
 ### 🔹 Perfil creado en CleverTap
-![CleverTap Profile](clevertap-demo/src/docs/images/clevertap-profile.png)
+![CleverTap Profile](docs/images/clevertap-profile.png)
 
 ### 🔹 Evento registrado en CleverTap (Activity)
-![CleverTap Activity](clevertap-demo/src/docs/images/clevertap-activity.png)
+![CleverTap Activity](docs/images/clevertap-activity.png)
 
 ---
 
