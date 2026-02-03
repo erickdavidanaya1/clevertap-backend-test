@@ -212,22 +212,22 @@ Incluye:
 ## 📸 Screenshots de la prueba funcionando
 
 ### 🔹 Login y obtención de JWT
-![Login Token](docs/images/login-token.png)
+![Login Token](docs/login-token.png)
 
 ### 🔹 Autorización en Swagger con Bearer Token
-![Authorize](docs/images/swagger-authorize.png)
+![Authorize](docs/swagger-authorize.png)
 
 ### 🔹 Creación de usuario (200 OK)
-![Create User](docs/images/create-user.png)
+![Create User](docs/create-user.png)
 
 ### 🔹 Creación de evento (200 OK)
-![Create Event](docs/images/create-event.png)
+![Create Event](docs/create-event.png)
 
 ### 🔹 Perfil creado en CleverTap
-![CleverTap Profile](docs/images/clevertap-profile.png)
+![CleverTap Profile](docs/clevertap-profile.png)
 
 ### 🔹 Evento registrado en CleverTap (Activity)
-![CleverTap Activity](docs/images/clevertap-activity.png)
+![CleverTap Activity](docs/clevertap-activity.png)
 
 ---
 
