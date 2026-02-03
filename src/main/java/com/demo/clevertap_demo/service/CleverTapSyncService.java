@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,22 +24,21 @@ public class CleverTapSyncService {
   }
 
   public ResponseEntity<String> sendUserUpsert(AppUser user) {
-    Map<String, Object> profile = new HashMap<>();
-    profile.put("Name", user.getName());
-    profile.put("Email", user.getEmail());
+    Map<String, Object> profileData = new HashMap<>();
+    // CleverTap commonly uses these keys (puedes ajustar si quieres)
+    profileData.put("Name", user.getName());
+    profileData.put("Email", user.getEmail());
 
     Map<String, Object> item = new HashMap<>();
     item.put("identity", user.getExternalId());
     item.put("type", "profile");
-    item.put("profile", profile);
+    item.put("profileData", profileData);
 
     Map<String, Object> body = new HashMap<>();
     body.put("d", List.of(item));
 
     return client.upload(body);
   }
-  
-   //envío de evento en CleverTap usando /1/upload.
 
   public ResponseEntity<String> sendEvent(AppEvent ev, AppUser user) {
     Map<String, Object> eventData = new HashMap<>();
@@ -48,7 +46,8 @@ public class CleverTapSyncService {
     eventData.put("type", "event");
     eventData.put("evtName", ev.getName());
     eventData.put("evtData", parseJsonOrEmpty(ev.getPayloadJson()));
-    eventData.put("ts", DateTimeFormatter.ISO_INSTANT.format(ev.getTimestamp()));
+    // CleverTap: epoch seconds is the safest
+    eventData.put("ts", ev.getTimestamp().getEpochSecond());
 
     Map<String, Object> body = new HashMap<>();
     body.put("d", List.of(eventData));
@@ -57,12 +56,14 @@ public class CleverTapSyncService {
   }
 
   private Map<String, Object> parseJsonOrEmpty(String json) {
-    if (json == null || json.isBlank()) return Map.of();
     try {
+      if (json == null || json.isBlank()) return Map.of();
       return mapper.readValue(json, new TypeReference<Map<String, Object>>() {});
     } catch (Exception e) {
       return Map.of();
     }
   }
 }
+
+
 

@@ -1,4 +1,3 @@
-// src/main/java/com/demo/clevertap_demo/service/EventService.java
 package com.demo.clevertap_demo.service;
 
 import com.demo.clevertap_demo.dto.CreateEventRequest;
@@ -6,6 +5,8 @@ import com.demo.clevertap_demo.model.AppEvent;
 import com.demo.clevertap_demo.model.AppUser;
 import com.demo.clevertap_demo.repository.AppEventRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,6 +14,8 @@ import java.util.List;
 
 @Service
 public class EventService {
+
+  private static final Logger log = LoggerFactory.getLogger(EventService.class);
 
   private final AppEventRepository eventsRepo;
   private final UserService userService;
@@ -43,16 +46,15 @@ public class EventService {
       payloadJson = "{}";
     }
 
-    AppEvent ev = new AppEvent(user, req.name, ts, payloadJson);
-    AppEvent saved = eventsRepo.save(ev);
+    AppEvent saved = eventsRepo.save(new AppEvent(user, req.name, ts, payloadJson));
 
-    // Sync a CleverTap (no tumba la API si falla)
+    // Sync a CleverTap (no debería tumbar la API si falla)
     try {
       var resp = cleverTapSyncService.sendEvent(saved, user);
-      System.out.println("[CleverTap] event sync status=" + resp.getStatusCode());
-      System.out.println("[CleverTap] event sync body=" + resp.getBody());
+      log.info("[CleverTap] event sync status={}", resp.getStatusCode());
+      log.debug("[CleverTap] event sync body={}", resp.getBody());
     } catch (Exception e) {
-      System.out.println("[CleverTap] event sync failed: " + e.getMessage());
+      log.warn("[CleverTap] event sync failed: {}", e.getMessage());
     }
 
     return saved;
@@ -62,4 +64,6 @@ public class EventService {
     return eventsRepo.findByUser_IdOrderByTimestampDesc(userId);
   }
 }
+
+
 

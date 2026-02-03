@@ -3,6 +3,7 @@ package com.demo.clevertap_demo.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,23 +22,43 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
     http
+        // API stateless => CSRF fuera
         .csrf(csrf -> csrf.disable())
+
+        // No sesiones
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        // MUY IMPORTANTE: desactiva defaults que a veces terminan en 403
+        // Evita login form / redirects
+        .httpBasic(Customizer.withDefaults())
         .formLogin(form -> form.disable())
-        .httpBasic(basic -> basic.disable())
-
-        // para que si NO hay token sea 401 y no 403 “raro”
-        .exceptionHandling(ex -> ex.authenticationEntryPoint(
-            (req, res, e) -> res.sendError(401, "Unauthorized")
-        ))
 
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/auth/**", "/error").permitAll()
+
+            // Salud / ping (opcional)
+            .requestMatchers(HttpMethod.GET, "/ping").permitAll()
+
+            // Auth (registro/login sin token)
+            .requestMatchers("/auth/**").permitAll()
+
+            // Swagger / OpenAPI
+            .requestMatchers(
+                "/swagger-ui.html",
+                "/swagger-ui/**",
+                "/swagger-ui/index.html",
+                "/v3/api-docs",
+                "/v3/api-docs/**"
+            ).permitAll()
+
+            // Evita Whitelabel de Spring si algo falla
+            .requestMatchers("/error").permitAll()
+
+            // lo demás con JWT
             .anyRequest().authenticated()
         )
+
+        // Filtro JWT antes del filtro de username/password
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
@@ -48,4 +69,6 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 }
+
+
 
